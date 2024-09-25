@@ -17,16 +17,6 @@
 
 
 //
-// PCL 6/PCL-XL support is current experimental and I've run into enough
-// printers that can't handle the current code that I'm uncomfortable enabling
-// it by default.  Define "WITH_PCL6" to enable the code, otherwise only the
-// PCL 3/5 drivers are enabled.
-//
-
-//#define WITH_PCL6
-
-
-//
 // CUPS v3 makes some API changes.  These defines allow the same code to work
 // for the v2 and v3 APIs...
 //
@@ -44,241 +34,9 @@ typedef enum hp_driver_e		// Drivers
 {
   HP_DRIVER_DESKJET,			// PCL 3 Deskjet
   HP_DRIVER_GENERIC,			// PCL 5 generic
-#if WITH_PCL6
-  HP_DRIVER_GENERIC6,			// PCL 6 generic B&W
-  HP_DRIVER_GENERIC6C,			// PCL 6 generic color
-#endif // WITH_PCL6
   HP_DRIVER_LASERJET			// PCL 5 LaserJet
 } hp_driver_t;
 
-#if WITH_PCL6
-enum pcl6_attr
-{
-  PCL6_ATTR_COLOR_SPACE = 3,
-  PCL6_ATTR_MEDIA_SIZE = 37,
-  PCL6_ATTR_MEDIA_SOURCE = 38,
-  PCL6_ATTR_MEDIA_TYPE = 39,
-  PCL6_ATTR_ORIENTATION = 40,
-  PCL6_ATTR_SIMPLEX_PAGE_MODE = 52,
-  PCL6_ATTR_DUPLEX_PAGE_MODE = 53,
-  PCL6_ATTR_DUPLEX_PAGE_SIDE = 54,
-  PCL6_ATTR_POINT = 76,
-  PCL6_ATTR_COLOR_DEPTH = 98,
-  PCL6_ATTR_BLOCK_HEIGHT = 99,
-  PCL6_ATTR_COLOR_MAPPING = 100,
-  PCL6_ATTR_COMPRESS_MODE = 101,
-  PCL6_ATTR_DESTINATION_BOX = 102,
-  PCL6_ATTR_DESTINATION_SIZE = 103,
-  PCL6_ATTR_SOURCE_HEIGHT = 107,
-  PCL6_ATTR_SOURCE_WIDTH = 108,
-  PCL6_ATTR_START_LINE = 109,
-  PCL6_ATTR_PAD_BYTES_MULTIPLE = 110,
-  PCL6_ATTR_BLOCK_BYTE_LENGTH = 111,
-  PCL6_ATTR_DATA_ORG = 130,
-  PCL6_ATTR_MEASURE = 134,
-  PCL6_ATTR_SOURCE_TYPE = 136,
-  PCL6_ATTR_UNITS_PER_MEASURE = 137,
-  PCL6_ATTR_ERROR_REPORT = 143
-};
-
-enum pcl6_cmd
-{
-  PCL6_CMD_BEGIN_SESSION = 0x41,
-  PCL6_CMD_END_SESSION = 0x42,
-  PCL6_CMD_BEGIN_PAGE = 0x43,
-  PCL6_CMD_END_PAGE = 0x44,
-  PCL6_CMD_OPEN_DATA_SOURCE = 0x48,
-  PCL6_CMD_CLOSE_DATA_SOURCE = 0x49,
-  PCL6_CMD_SET_COLOR_SPACE = 0x6a,
-  PCL6_CMD_SET_CURSOR = 0x6b,
-  PCL6_CMD_BEGIN_IMAGE = 0xb0,
-  PCL6_CMD_READ_IMAGE = 0xb1,
-  PCL6_CMD_END_IMAGE = 0xb2
-};
-
-enum pcl6_color_depth
-{
-  PCL6_E_1_BIT,
-  PCL6_E_4_BIT,
-  PCL6_E_8_BIT
-};
-
-enum pcl6_color_mapping
-{
-  PCL6_E_DIRECT_PIXEL,
-  PCL6_E_INDEXED_PIXEL,
-  PCL6_E_DIRECT_PLANE
-};
-
-enum pcl6_color_space
-{
-  PCL6_E_BI_LEVEL,
-  PCL6_E_GRAY,
-  PCL6_E_RGB,
-  PCL6_E_CMY,
-  PCL6_E_CIELAB,
-  PCL6_E_CRGB,
-  PCL6_E_SRGB
-};
-
-enum pcl6_compress_mode
-{
-  PCL6_E_NO_COMPRESSION,
-  PCL6_E_RLE_COMPRESSION,
-  PCL6_E_JPEG_COMPRESSION,
-  PCL6_E_DELTA_ROW_COMPRESSION
-};
-
-enum pcl6_data_org
-{
-  PCL6_E_BINARY_HIGH_BYTE_FIRST,
-  PCL6_E_BINARY_LOW_BYTE_FIRST
-};
-
-enum pcl6_data_source
-{
-  PCL6_E_DEFAULT
-};
-
-enum pcl6_data_type
-{
-  PCL6_E_UBYTE,
-  PCL6_E_SBYTE,
-  PCL6_E_UINT16,
-  PCL6_E_SINT16
-};
-
-enum pcl6_duplex_page_mode
-{
-  PCL6_E_DUPLEX_HORIZONTAL_BINDING,	// Long-edge
-  PCL6_E_DUPLEX_VERTICAL_BINDING	// Short-edge
-};
-
-enum pcl6_duplex_page_side
-{
-  PCL6_E_FRONT_MEDIA_SIDE,
-  PCL6_E_BACK_MEDIA_SIDE
-};
-
-enum pcl6_enc
-{
-  PCL6_ENC_UBYTE = 0xc0,
-  PCL6_ENC_UINT16 = 0xc1,
-  PCL6_ENC_UINT32 = 0xc2,
-  PCL6_ENC_SINT16 = 0xc3,
-  PCL6_ENC_SINT32 = 0xc4,
-  PCL6_ENC_REAL32 = 0xc5,
-
-  PCL6_ENC_UBYTE_ARRAY = 0xc8,
-  PCL6_ENC_UINT16_ARRAY = 0xc9,
-  PCL6_ENC_UINT32_ARRAY = 0xca,
-  PCL6_ENC_SINT16_ARRAY = 0xcb,
-  PCL6_ENC_SINT32_ARRAY = 0xcc,
-  PCL6_ENC_REAL32_ARRAY = 0xcd,
-
-  PCL6_ENC_UBYTE_XY = 0xd0,
-  PCL6_ENC_UINT16_XY = 0xd1,
-  PCL6_ENC_UINT32_XY = 0xd2,
-  PCL6_ENC_SINT16_XY = 0xd3,
-  PCL6_ENC_SINT32_XY = 0xd4,
-  PCL6_ENC_REAL32_XY = 0xd5,
-
-  PCL6_ENC_UBYTE_BOX = 0xe0,
-  PCL6_ENC_UINT16_BOX = 0xe1,
-  PCL6_ENC_UINT32_BOX = 0xe2,
-  PCL6_ENC_SINT16_BOX = 0xe3,
-  PCL6_ENC_SINT32_BOX = 0xe4,
-  PCL6_ENC_REAL32_BOX = 0xe5,
-
-  PCL6_ENC_ATTR_UBYTE = 0xf8,
-  PCL6_ENC_ATTR_UINT16 = 0xf9,
-  PCL6_ENC_EMBEDDED_DATA = 0xfa,
-  PCL6_ENC_EMBEDDED_DATA_BYTE = 0xfb
-};
-
-enum pcl6_error_report
-{
-  PCL6_E_NO_REPORTING,
-  PCL6_E_ERROR_PAGE = 2
-};
-
-enum pcl6_measure
-{
-  PCL6_E_INCH,
-  PCL6_E_MILLIMETER,
-  PCL6_E_TENTHS_OF_A_MILLIMETER
-};
-
-enum pcl6_media_size
-{
-  PCL6_E_LETTER_PAPER,
-  PCL6_E_LEGAL_PAPER,
-  PCL6_E_A4_PAPER,
-  PCL6_E_EXEC_PAPER,
-  PCL6_E_LEDGER_PAPER,
-  PCL6_E_A3_PAPER,
-  PCL6_E_COM10_ENVELOPE,
-  PCL6_E_MONARCH_ENVELOPE,
-  PCL6_E_C5_ENVELOPE,
-  PCL6_E_DL_ENVELOPE,
-  PCL6_E_JB4_PAPER,
-  PCL6_E_JB5_PAPER,
-  PCL6_E_B5_ENVELOPE,
-  PCL6_E_JPOSTCARD,
-  PCL6_E_JDOUBLE_POSTCARD,
-  PCL6_E_A5_PAPER,
-  PCL6_E_A6_PAPER,
-  PCL6_E_JB6_PAPER,
-  PCL6_E_JIS_8K_PAPER,
-  PCL6_E_JIS_16K_PAPER,
-  PCL6_E_JIS_EXEC_PAPER
-};
-
-enum pcl6_media_source
-{
-  PCL6_E_DEFAULT_SOURCE,
-  PCL6_E_AUTO_SELECT,
-  PCL6_E_MANUAL_FEED,
-  PCL6_E_MULTI_PURPOSE_TRAY,
-  PCL6_E_UPPER_CASSETTE,
-  PCL6_E_LOWER_CASSETTE,
-  PCL6_E_ENVELOPE_TRAY,
-  PCL6_E_THIRD_CASSETTE,
-  PCL6_E_TRAY_1,
-  PCL6_E_TRAY_2,
-  PCL6_E_TRAY_3,
-  PCL6_E_TRAY_4,
-  PCL6_E_TRAY_5,
-  PCL6_E_TRAY_6,
-  PCL6_E_TRAY_7,
-  PCL6_E_TRAY_8,
-  PCL6_E_TRAY_9,
-  PCL6_E_TRAY_10,
-  PCL6_E_TRAY_11,
-  PCL6_E_TRAY_12,
-  PCL6_E_TRAY_13,
-  PCL6_E_TRAY_14,
-  PCL6_E_TRAY_15,
-  PCL6_E_TRAY_16,
-  PCL6_E_TRAY_17,
-  PCL6_E_TRAY_18,
-  PCL6_E_TRAY_19,
-  PCL6_E_TRAY_20,
-};
-
-enum pcl6_orientation
-{
-  PCL6_E_PORTRAIT_ORIENTATION,
-  PCL6_E_LANDSCAPE_ORIENTATION,
-  PCL6_E_REVERSE_PORTRAIT,
-  PCL6_E_REVERSE_LANDSCAPE
-};
-
-enum pcl6_simplex_page_mode
-{
-  PCL6_E_SIMPLEX_FRONT_SIDE
-};
-#endif // WITH_PCL6
 
 
 //
@@ -317,10 +75,6 @@ static pappl_pr_driver_t pcl_drivers[] =   // Driver information
 {   /* name */          /* description */	/* device ID */	/* extension */
   { "hp_deskjet",	"HP Deskjet series",	NULL,		NULL },
   { "hp_generic",	"Generic PCL 5",	"CMD:PCL;",	NULL },
-#if WITH_PCL6
-  { "hp_generic6",	"Generic PCL 6/XL",	NULL,		NULL },
-  { "hp_generic6c",	"Generic Color PCL 6/XL", "CMD:PCLXL;",	NULL },
-#endif // WITH_PCL6
   { "hp_laserjet",	"HP LaserJet series",	NULL,		NULL },
 };
 
@@ -389,15 +143,6 @@ static bool	pcl_rstartpage(pappl_job_t *job, pappl_pr_options_t *options, pappl_
 static bool	pcl_rwriteline(pappl_job_t *job, pappl_pr_options_t *options, pappl_device_t *device, unsigned y, const unsigned char *pixels);
 static bool	pcl_status(pappl_printer_t *printer);
 static bool	pcl_update_status(pappl_printer_t *printer, pappl_device_t *device);
-#if WITH_PCL6
-static void	pcl6_write_command(pappl_device_t *device, enum pcl6_cmd command);
-static void	pcl6_write_data(pappl_device_t *device, const unsigned char *buffer, size_t length);
-//static void	pcl6_write_string(pappl_device_t *device, const char *s, enum pcl6_attr attr);
-static void	pcl6_write_ubyte(pappl_device_t *device, unsigned n, enum pcl6_attr attr);
-static void	pcl6_write_uint16(pappl_device_t *device, unsigned n, enum pcl6_attr attr);
-static void	pcl6_write_uint32(pappl_device_t *device, unsigned n, enum pcl6_attr attr);
-static void	pcl6_write_xy(pappl_device_t *device, unsigned x, unsigned y, enum pcl6_attr attr);
-#endif // WITH_PCL6
 
 
 //
@@ -668,96 +413,6 @@ pcl_callback(
         snprintf(driver_data->media_ready[i].size_name, sizeof(driver_data->media_ready[i].size_name), "env_10_4.125x9.5in");
     }
   }
-#if WITH_PCL6
-  else if (!strncmp(driver_name, "hp_generic6", 11))
-  {
-    // Native format...
-    driver_data->format = "application/vnd.hp-pclxl";
-
-    /* Make and model name */
-    if (driver_name[11] == 'c')
-      papplCopyString(driver_data->make_and_model, "Generic PCL 6 Color", sizeof(driver_data->make_and_model));
-    else
-      papplCopyString(driver_data->make_and_model, "Generic PCL 6 Monochrome", sizeof(driver_data->make_and_model));
-
-    /* Icons */
-    driver_data->icons[0].data    = hp_generic_sm_png;
-    driver_data->icons[0].datalen = sizeof(hp_generic_sm_png);
-
-    driver_data->icons[1].data    = hp_generic_md_png;
-    driver_data->icons[1].datalen = sizeof(hp_generic_md_png);
-
-    driver_data->icons[2].data    = hp_generic_lg_png;
-    driver_data->icons[2].datalen = sizeof(hp_generic_lg_png);
-
-    /* Pages-per-minute for monochrome and color */
-    driver_data->ppm = 10;
-
-    /* Two resolutions - 300dpi (default) and 600dpi */
-    driver_data->num_resolution  = 2;
-    driver_data->x_resolution[0] = 300;
-    driver_data->y_resolution[0] = 300;
-    driver_data->x_resolution[1] = 600;
-    driver_data->y_resolution[1] = 600;
-    driver_data->x_default = driver_data->y_default = 300;
-
-    if (driver_name[11] == 'c')
-    {
-      /* Four color spaces - black (1-bit and 8-bit), grayscale, and sRGB */
-      driver_data->raster_types = PAPPL_PWG_RASTER_TYPE_BLACK_1 | PAPPL_PWG_RASTER_TYPE_BLACK_8 | PAPPL_PWG_RASTER_TYPE_SGRAY_8 | PAPPL_PWG_RASTER_TYPE_SRGB_8;
-
-      /* Color modes: auto (default), monochrome, and color */
-      driver_data->color_supported = PAPPL_COLOR_MODE_AUTO | PAPPL_COLOR_MODE_AUTO_MONOCHROME | PAPPL_COLOR_MODE_COLOR | PAPPL_COLOR_MODE_MONOCHROME;
-      driver_data->color_default   = PAPPL_COLOR_MODE_AUTO;
-
-      driver_data->ppm_color = 10;
-    }
-    else
-    {
-      /* Three color spaces - black (1-bit and 8-bit) and grayscale */
-      driver_data->raster_types = PAPPL_PWG_RASTER_TYPE_BLACK_1 | PAPPL_PWG_RASTER_TYPE_BLACK_8 | PAPPL_PWG_RASTER_TYPE_SGRAY_8;
-
-      /* Color modes: monochrome */
-      driver_data->color_supported = PAPPL_COLOR_MODE_MONOCHROME;
-      driver_data->color_default   = PAPPL_COLOR_MODE_MONOCHROME;
-    }
-
-    driver_data->num_media = (int)(sizeof(pcl_generic_pcl_media) / sizeof(pcl_generic_pcl_media[0]));
-    memcpy(driver_data->media, pcl_generic_pcl_media, sizeof(pcl_generic_pcl_media));
-
-    driver_data->sides_supported = PAPPL_SIDES_ONE_SIDED | PAPPL_SIDES_TWO_SIDED_LONG_EDGE | PAPPL_SIDES_TWO_SIDED_SHORT_EDGE;
-    driver_data->sides_default   = PAPPL_SIDES_ONE_SIDED;
-
-    driver_data->num_source = 7;
-    driver_data->source[0]  = "default";
-    driver_data->source[1]  = "tray-1";
-    driver_data->source[2]  = "tray-2";
-    driver_data->source[3]  = "tray-3";
-    driver_data->source[4]  = "tray-4";
-    driver_data->source[5]  = "manual";
-    driver_data->source[6]  = "envelope";
-
-    /* Media types (MSN names) */
-    driver_data->num_type = 6;
-    driver_data->type[0]  = "stationery";
-    driver_data->type[1]  = "stationery-letterhead";
-    driver_data->type[2]  = "cardstock";
-    driver_data->type[3]  = "labels";
-    driver_data->type[4]  = "envelope";
-    driver_data->type[5]  = "transparency";
-
-    driver_data->left_right = 423;	// 1/6" left and right
-    driver_data->bottom_top = 423;	// 1/6" top and bottom
-
-    for (i = 0; i < driver_data->num_source; i ++)
-    {
-      if (strcmp(driver_data->source[i], "envelope"))
-        snprintf(driver_data->media_ready[i].size_name, sizeof(driver_data->media_ready[i].size_name), "na_letter_8.5x11in");
-      else
-        snprintf(driver_data->media_ready[i].size_name, sizeof(driver_data->media_ready[i].size_name), "env_10_4.125x9.5in");
-    }
-  }
-#endif // WITH_PCL6
   else if (!strcmp(driver_name, "hp_laserjet"))
   {
     /* Make and model name */
@@ -963,22 +618,6 @@ pcl_compress_data(
 	papplDeviceWrite(device, line_ptr, (size_t)(line_end - line_ptr));
 	break;
 
-#if WITH_PCL6
-    case HP_DRIVER_GENERIC6 :
-    case HP_DRIVER_GENERIC6C :
-        count = (unsigned)(line_end - line_ptr);
-        if (!comp)
-          count = (count + 3) & ~3;	// Pad to 32-bit boundary
-
-        pcl6_write_uint16(device, y - pcl->ystart, PCL6_ATTR_START_LINE);
-        pcl6_write_uint16(device, 1, PCL6_ATTR_BLOCK_HEIGHT);
-        pcl6_write_ubyte(device, comp ? PCL6_E_RLE_COMPRESSION : PCL6_E_NO_COMPRESSION, PCL6_ATTR_COMPRESS_MODE);
-//	pcl6_write_ubyte(device, 1, PCL6_ATTR_PAD_BYTES_MULTIPLE);
-//        pcl6_write_uint32(device, count, PCL6_ATTR_BLOCK_BYTE_LENGTH);
-        pcl6_write_command(device, PCL6_CMD_READ_IMAGE);
-        pcl6_write_data(device, line_ptr, count);
-        break;
-#endif // WITH_PCL6
   }
 }
 
@@ -1048,13 +687,6 @@ pcl_rendjob(
 	papplDevicePuts(device, "\033E");
 	break;
 
-#if WITH_PCL6
-    case HP_DRIVER_GENERIC6 :
-    case HP_DRIVER_GENERIC6C :
-        pcl6_write_command(device, PCL6_CMD_END_SESSION);
-	papplDevicePuts(device, "\033%-12345X");
-	break;
-#endif // WITH_PCL6
   }
 
   free(pcl);
@@ -1106,14 +738,6 @@ pcl_rendpage(
 	}
 	break;
 
-#if WITH_PCL6
-    case HP_DRIVER_GENERIC6 :
-    case HP_DRIVER_GENERIC6C :
-        pcl6_write_command(device, PCL6_CMD_END_IMAGE);
-        pcl6_write_command(device, PCL6_CMD_CLOSE_DATA_SOURCE);
-        pcl6_write_command(device, PCL6_CMD_END_PAGE);
-	break;
-#endif // WITH_PCL6
   }
 
   papplDeviceFlush(device);
@@ -1172,22 +796,6 @@ pcl_rstartjob(
 	papplDevicePuts(device, "\033E");
 	break;
 
-#if WITH_PCL6
-    case HP_DRIVER_GENERIC6 :
-    case HP_DRIVER_GENERIC6C :
-        // Send a PCL XL start sequence
-        papplDevicePuts(device, "\033%-12345X@PJL ENTER LANGUAGE = PCLXL\r\n");
-
-        // Send a PCL XL binary stream header
-        papplDevicePuts(device, ") HP-PCL XL;2;0\r\n");
-
-        // Start PCL 6 session...
-        pcl6_write_ubyte(device, PCL6_E_INCH, PCL6_ATTR_MEASURE);
-        pcl6_write_xy(device, options->printer_resolution[0], options->printer_resolution[1], PCL6_ATTR_UNITS_PER_MEASURE);
-        pcl6_write_ubyte(device, PCL6_E_ERROR_PAGE, PCL6_ATTR_ERROR_REPORT);
-        pcl6_write_command(device, PCL6_CMD_BEGIN_SESSION);
-        break;
-#endif // WITH_PCL6
   }
 
   return (true);
@@ -1266,54 +874,6 @@ pcl_rstartpage(
     { "stationery",		0 },
     { "transparency",		4 }
   };
-#if WITH_PCL6
-  static const pcl_map_t pcl6_sizes[] =	// PCL media size values
-  {
-    { "iso_a3_297x420mm",		PCL6_E_A3_PAPER },
-    { "iso_a4_210x297mm",		PCL6_E_A4_PAPER },
-    { "iso_a5_148x210mm",		PCL6_E_A5_PAPER },
-    { "iso_b5_176x250mm",		PCL6_E_B5_ENVELOPE },
-    { "iso_c5_162x229mm",		PCL6_E_C5_ENVELOPE },
-    { "iso_dl_110x220mm",		PCL6_E_DL_ENVELOPE },
-    { "jis_b5_182x257mm",		PCL6_E_JB5_PAPER },
-    { "na_executive_7x10in",		PCL6_E_EXEC_PAPER },
-    { "na_ledger_11x17in",		PCL6_E_LEDGER_PAPER },
-    { "na_legal_8.5x14in",		PCL6_E_LEGAL_PAPER },
-    { "na_letter_8.5x11in",		PCL6_E_LETTER_PAPER },
-    { "na_monarch_3.875x7.5in",		PCL6_E_MONARCH_ENVELOPE },
-    { "na_number-10_4.125x9.5in",	PCL6_E_COM10_ENVELOPE }
-  };
-  static const pcl_map_t pcl6_sources[] =// PCL media source values
-  {
-    { "auto",		PCL6_E_AUTO_SELECT },
-    { "by-pass-tray",	PCL6_E_MULTI_PURPOSE_TRAY },
-    { "envelope",	PCL6_E_ENVELOPE_TRAY },
-    { "large-capacity",	PCL6_E_LOWER_CASSETTE },
-    { "main",		PCL6_E_UPPER_CASSETTE },
-    { "manual",		PCL6_E_MANUAL_FEED },
-    { "right",		PCL6_E_THIRD_CASSETTE },
-    { "tray-1",		PCL6_E_TRAY_1 },
-    { "tray-2",		PCL6_E_TRAY_2 },
-    { "tray-3",		PCL6_E_TRAY_3 },
-    { "tray-4",		PCL6_E_TRAY_4 },
-    { "tray-5",		PCL6_E_TRAY_5 },
-    { "tray-6",		PCL6_E_TRAY_6 },
-    { "tray-7",		PCL6_E_TRAY_7 },
-    { "tray-8",		PCL6_E_TRAY_8 },
-    { "tray-9",		PCL6_E_TRAY_9 },
-    { "tray-10",	PCL6_E_TRAY_10 },
-    { "tray-11",	PCL6_E_TRAY_11 },
-    { "tray-12",	PCL6_E_TRAY_12 },
-    { "tray-13",	PCL6_E_TRAY_13 },
-    { "tray-14",	PCL6_E_TRAY_14 },
-    { "tray-15",	PCL6_E_TRAY_15 },
-    { "tray-16",	PCL6_E_TRAY_16 },
-    { "tray-17",	PCL6_E_TRAY_17 },
-    { "tray-18",	PCL6_E_TRAY_18 },
-    { "tray-19",	PCL6_E_TRAY_19 },
-    { "tray-20",	PCL6_E_TRAY_20 }
-  };
-#endif // WITH_PCL6
 
 
   papplLogJob(job, PAPPL_LOGLEVEL_DEBUG, "Starting page %u...", page);
@@ -1463,90 +1023,6 @@ pcl_rstartpage(
 	  pcl->planes[plane] = pcl->planes[0] + plane * pcl->linesize;
 	break;
 
-#if WITH_PCL6
-    case HP_DRIVER_GENERIC6 :
-    case HP_DRIVER_GENERIC6C :
-        if (pcl->width & 3)
-        {
-          papplLogJob(job, PAPPL_LOGLEVEL_DEBUG, "Adjusting width to multiple of 4 bytes.");
-          pcl->width &= ~3;
-          pcl->xend   = pcl->xstart + pcl->width;
-        }
-
-        pcl6_write_ubyte(device, PCL6_E_PORTRAIT_ORIENTATION, PCL6_ATTR_ORIENTATION);
-
-	// Set media position
-	for (i = 0; i < (sizeof(pcl6_sources) / sizeof(pcl6_sources[0])); i ++)
-	{
-	  if (!strcmp(options->media.source, pcl6_sources[i].keyword))
-	  {
-	    pcl6_write_ubyte(device, pcl_sources[i].value, PCL6_ATTR_MEDIA_SOURCE);
-	    break;
-	  }
-	}
-
-	// Set page size
-	for (i = 0; i < (sizeof(pcl6_sizes) / sizeof(pcl6_sizes[0])); i ++)
-	{
-	  if (!strcmp(options->media.size_name, pcl6_sizes[i].keyword))
-	  {
-	    pcl6_write_ubyte(device, pcl_sizes[i].value, PCL6_ATTR_MEDIA_SIZE);
-	    break;
-	  }
-	}
-
-        if (options->sides != PAPPL_SIDES_ONE_SIDED)
-        {
-          if (options->sides == PAPPL_SIDES_TWO_SIDED_LONG_EDGE)
-	    pcl6_write_ubyte(device, PCL6_E_DUPLEX_HORIZONTAL_BINDING, PCL6_ATTR_DUPLEX_PAGE_MODE);
-	  else
-	    pcl6_write_ubyte(device, PCL6_E_DUPLEX_VERTICAL_BINDING, PCL6_ATTR_DUPLEX_PAGE_MODE);
-
-          pcl6_write_ubyte(device, (page & 1) ? PCL6_E_BACK_MEDIA_SIDE : PCL6_E_FRONT_MEDIA_SIDE, PCL6_ATTR_DUPLEX_PAGE_SIDE);
-        }
-        else
-          pcl6_write_ubyte(device, PCL6_E_SIMPLEX_FRONT_SIDE, PCL6_ATTR_SIMPLEX_PAGE_MODE);
-
-	pcl6_write_command(device, PCL6_CMD_BEGIN_PAGE);
-
-        switch (header->cupsColorSpace)
-        {
-          case CUPS_CSPACE_K :
-          case CUPS_CSPACE_W :
-          case CUPS_CSPACE_SW :
-	      pcl6_write_ubyte(device, PCL6_E_GRAY, PCL6_ATTR_COLOR_SPACE);
-              break;
-          case CUPS_CSPACE_RGB :
-          case CUPS_CSPACE_SRGB :
-          default :
-	      pcl6_write_ubyte(device, PCL6_E_RGB, PCL6_ATTR_COLOR_SPACE);
-              break;
-        }
-
-	pcl6_write_command(device, PCL6_CMD_SET_COLOR_SPACE);
-
-        pcl6_write_xy(device, options->printer_resolution[0] * options->media.left_margin / 2540, options->printer_resolution[1] * options->media.top_margin / 2540, PCL6_ATTR_POINT);
-        pcl6_write_command(device, PCL6_CMD_SET_CURSOR);
-
-        pcl6_write_ubyte(device, PCL6_E_DEFAULT, PCL6_ATTR_SOURCE_TYPE);
-        pcl6_write_ubyte(device, PCL6_E_BINARY_HIGH_BYTE_FIRST, PCL6_ATTR_DATA_ORG);
-        pcl6_write_command(device, PCL6_CMD_OPEN_DATA_SOURCE);
-
-        pcl6_write_ubyte(device, header->cupsBitsPerPixel == 1 ? PCL6_E_1_BIT : PCL6_E_8_BIT, PCL6_ATTR_COLOR_DEPTH);
-        pcl6_write_ubyte(device, PCL6_E_DIRECT_PIXEL, PCL6_ATTR_COLOR_MAPPING);
-        pcl6_write_uint16(device, pcl->width, PCL6_ATTR_SOURCE_WIDTH);
-        pcl6_write_uint16(device, pcl->height, PCL6_ATTR_SOURCE_HEIGHT);
-        pcl6_write_xy(device, pcl->width, pcl->height, PCL6_ATTR_DESTINATION_SIZE);
-        pcl6_write_command(device, PCL6_CMD_BEGIN_IMAGE);
-
-        if (header->cupsBitsPerPixel == 1)
-	  pcl->linesize = (pcl->width + 7) / 8;
-	else
-	  pcl->linesize = pcl->width * header->cupsBitsPerPixel / 8;
-
-        pcl->linesize = (pcl->linesize + 3) & ~3;
-        break;
-#endif // WITH_PCL6
   }
 
   // No blank lines yet...
@@ -1707,13 +1183,6 @@ pcl_rwriteline(
 	  pcl->feed ++;
 	break;
 
-#if WITH_PCL6
-    case HP_DRIVER_GENERIC6 :
-    case HP_DRIVER_GENERIC6C :
-	if (*pixels != byte || memcmp(pixels, pixels + 1, header->cupsBytesPerLine - 1))
-	  pcl_compress_data(pcl, device, y, pixels + pcl->xstart * header->cupsBitsPerPixel / 8, pcl->linesize, 0);
-	break;
-#endif // WITH_PCL6
   }
 
   return (true);
@@ -1816,262 +1285,3 @@ pcl_update_status(
 }
 
 
-#if WITH_PCL6
-//
-// 'pcl6_write_command()' - Write a command without attributes.
-//
-
-static void
-pcl6_write_command(
-    pappl_device_t *device,		// I - Output device
-    enum pcl6_cmd  command)		// I - Command
-{
-  unsigned char	buffer[1];		// Output buffer
-
-
-  buffer[0] = (unsigned char)command;
-  papplDeviceWrite(device, buffer, 1);
-}
-
-
-//
-// 'pcl6_write_data()' - Write a buffer of embedded data.
-//
-
-static void
-pcl6_write_data(
-    pappl_device_t      *device,	// I - Output device
-    const unsigned char *buffer,	// I - Data to write
-    size_t              length)		// I - Number of bytes
-{
-  unsigned char	length_buf[5];		// Embedded length prefix
-
-
-  if (length < 0x100)
-  {
-    // Length < 256 bytes
-    length_buf[0] = PCL6_ENC_EMBEDDED_DATA_BYTE;
-    length_buf[1] = (unsigned char)length;
-
-    papplDeviceWrite(device, length_buf, 2);
-  }
-  else
-  {
-    // Length >= 256 bytes
-    length_buf[0] = PCL6_ENC_EMBEDDED_DATA;
-    length_buf[1] = (unsigned char)length;
-    length_buf[2] = (unsigned char)(length >> 8);
-    length_buf[3] = (unsigned char)(length >> 16);
-    length_buf[4] = (unsigned char)(length >> 24);
-
-    papplDeviceWrite(device, length_buf, 5);
-  }
-
-  papplDeviceWrite(device, buffer, length);
-}
-
-
-#if 0
-//
-// 'pcl6_write_string()' - Write a single string attribute with optional command.
-//
-
-static void
-pcl6_write_string(
-    pappl_device_t *device,		// I - Output device
-    const char     *s,			// I - String
-    enum pcl6_attr attr)		// I - Attribute tag
-{
-  size_t	slen;			// Length of string (max 256 bytes)
-  unsigned char	buffer[264],		// Buffer
-		*bufptr = buffer;	// Pointer into buffer
-
-
-  if ((slen = strlen(s)) > 256)
-    slen = 256;				// Silently truncate...
-
-  *bufptr++ = PCL6_ENC_UBYTE_ARRAY;
-  *bufptr++ = PCL6_ENC_UINT16;
-  *bufptr++ = (unsigned char)slen;
-  *bufptr++ = (unsigned char)(slen >> 8);
-
-  memcpy(bufptr, s, slen);
-  bufptr += slen;
-
-  if (attr < 0x100)
-  {
-    *bufptr++ = PCL6_ENC_ATTR_UBYTE;
-    *bufptr++ = (unsigned char)attr;
-  }
-  else
-  {
-    *bufptr++ = PCL6_ENC_ATTR_UINT16;
-    *bufptr++ = (unsigned char)attr;
-    *bufptr++ = (unsigned char)((unsigned)attr >> 8);
-  }
-
-  papplDeviceWrite(device, buffer, (size_t)(bufptr - buffer));
-}
-#endif // 0
-
-
-//
-// 'pcl6_write_ubyte()' - Write an 8-bit unsigned integer attribute.
-//
-
-static void
-pcl6_write_ubyte(
-    pappl_device_t *device,		// I - Output device
-    unsigned       n,			// I - Number
-    enum pcl6_attr attr)		// I - Attribute tag
-{
-  unsigned char	buffer[9],		// Buffer
-		*bufptr = buffer;	// Pointer into buffer
-
-
-  *bufptr++ = PCL6_ENC_UBYTE;
-  *bufptr++ = (unsigned char)n;
-
-  if (attr < 0x100)
-  {
-    *bufptr++ = PCL6_ENC_ATTR_UBYTE;
-    *bufptr++ = (unsigned char)attr;
-  }
-  else
-  {
-    *bufptr++ = PCL6_ENC_ATTR_UINT16;
-    *bufptr++ = (unsigned char)attr;
-    *bufptr++ = (unsigned char)((unsigned)attr >> 8);
-  }
-
-  papplDeviceWrite(device, buffer, (size_t)(bufptr - buffer));
-}
-
-
-//
-// 'pcl6_write_uint16()' - Write a 16-bit unsigned integer attribute.
-//
-
-static void
-pcl6_write_uint16(
-    pappl_device_t *device,		// I - Output device
-    unsigned       n,			// I - Number
-    enum pcl6_attr attr)		// I - Attribute tag
-{
-  unsigned char	buffer[9],		// Buffer
-		*bufptr = buffer;	// Pointer into buffer
-
-
-  *bufptr++ = PCL6_ENC_UINT16;
-  *bufptr++ = (unsigned char)n;
-  *bufptr++ = (unsigned char)(n >> 8);
-
-  if (attr < 0x100)
-  {
-    *bufptr++ = PCL6_ENC_ATTR_UBYTE;
-    *bufptr++ = (unsigned char)attr;
-  }
-  else
-  {
-    *bufptr++ = PCL6_ENC_ATTR_UINT16;
-    *bufptr++ = (unsigned char)attr;
-    *bufptr++ = (unsigned char)((unsigned)attr >> 8);
-  }
-
-  papplDeviceWrite(device, buffer, (size_t)(bufptr - buffer));
-}
-
-
-//
-// 'pcl6_write_uint32()' - Write a 32-bit unsigned integer attribute.
-//
-
-static void
-pcl6_write_uint32(
-    pappl_device_t *device,		// I - Output device
-    unsigned       n,			// I - Number
-    enum pcl6_attr attr)		// I - Attribute tag
-{
-  unsigned char	buffer[9],		// Buffer
-		*bufptr = buffer;	// Pointer into buffer
-
-
-  *bufptr++ = PCL6_ENC_UINT32;
-  *bufptr++ = (unsigned char)n;
-  *bufptr++ = (unsigned char)(n >> 8);
-  *bufptr++ = (unsigned char)(n >> 16);
-  *bufptr++ = (unsigned char)(n >> 24);
-
-  if (attr < 0x100)
-  {
-    *bufptr++ = PCL6_ENC_ATTR_UBYTE;
-    *bufptr++ = (unsigned char)attr;
-  }
-  else
-  {
-    *bufptr++ = PCL6_ENC_ATTR_UINT16;
-    *bufptr++ = (unsigned char)attr;
-    *bufptr++ = (unsigned char)((unsigned)attr >> 8);
-  }
-
-  papplDeviceWrite(device, buffer, (size_t)(bufptr - buffer));
-}
-
-
-//
-// 'pcl6_write_xy()' - Write a single X,Y attribute.
-//
-
-static void
-pcl6_write_xy(
-    pappl_device_t *device,		// I - Output device
-    unsigned       x,			// I - X coordinate
-    unsigned       y,			// I - Y coordinate
-    enum pcl6_attr attr)		// I - Attribute tag
-{
-  unsigned char	buffer[13],		// Buffer
-		*bufptr = buffer;	// Pointer into buffer
-
-
-  if (x < 0x100 && y < 0x100)
-  {
-    *bufptr++ = PCL6_ENC_UBYTE_XY;
-    *bufptr++ = (unsigned char)x;
-    *bufptr++ = (unsigned char)y;
-  }
-  else if (x < 0x10000 && y < 0x10000)
-  {
-    *bufptr++ = PCL6_ENC_UINT16_XY;
-    *bufptr++ = (unsigned char)x;
-    *bufptr++ = (unsigned char)(x >> 8);
-    *bufptr++ = (unsigned char)y;
-    *bufptr++ = (unsigned char)(y >> 8);
-  }
-  else
-  {
-    *bufptr++ = PCL6_ENC_UINT32_XY;
-    *bufptr++ = (unsigned char)x;
-    *bufptr++ = (unsigned char)(x >> 8);
-    *bufptr++ = (unsigned char)(x >> 16);
-    *bufptr++ = (unsigned char)(x >> 24);
-    *bufptr++ = (unsigned char)y;
-    *bufptr++ = (unsigned char)(y >> 8);
-    *bufptr++ = (unsigned char)(y >> 16);
-    *bufptr++ = (unsigned char)(y >> 24);
-  }
-
-  if (attr < 0x100)
-  {
-    *bufptr++ = PCL6_ENC_ATTR_UBYTE;
-    *bufptr++ = (unsigned char)attr;
-  }
-  else
-  {
-    *bufptr++ = PCL6_ENC_ATTR_UINT16;
-    *bufptr++ = (unsigned char)attr;
-    *bufptr++ = (unsigned char)((unsigned)attr >> 8);
-  }
-
-  papplDeviceWrite(device, buffer, (size_t)(bufptr - buffer));
-}
-#endif // WITH_PCL6

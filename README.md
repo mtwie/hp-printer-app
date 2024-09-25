@@ -1,7 +1,14 @@
 HP Printer Application
 ======================
 
-![Version](https://img.shields.io/github/v/release/michaelrsweet/hp-printer-app?include_prereleases)
+> [!NOTE]
+> This fork is specifically adapted for my HP LaserJet P2055d.
+> 
+> **Adaptations:**
+>  - Stripped PCL6 support
+>
+> *Many thanks to michaelrsweet for his work on `CUPS`, `PAPPL` and [`hp-printer-app`](https://github.com/michaelrsweet/hp-printer-app)*
+
 ![Apache 2.0](https://img.shields.io/github/license/michaelrsweet/hp-printer-app)
 
 
