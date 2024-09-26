@@ -60,15 +60,9 @@ BUILDROOT	=	${DSTROOT}${RPM_BUILD_ROOT}${DESTDIR}
 
 # Resources...
 ICONS		=	\
-			icons/hp-deskjet-lg.png \
-			icons/hp-deskjet-md.png \
-			icons/hp-deskjet-sm.png \
-			icons/hp-generic-lg.png \
-			icons/hp-generic-md.png \
-			icons/hp-generic-sm.png \
-			icons/hp-laserjet-lg.png \
-			icons/hp-laserjet-md.png \
-			icons/hp-laserjet-sm.png
+			icons/hp-laserjet-p2055d-lg.png \
+			icons/hp-laserjet-p2055d-md.png \
+			icons/hp-laserjet-p2055d-sm.png
 
 
 # Targets...

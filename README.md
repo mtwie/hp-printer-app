@@ -6,6 +6,7 @@ HP Printer Application
 > 
 > **Adaptations:**
 >  - Stripped PCL6 support
+>  - Swapped in custom printer icons
 >
 > *Many thanks to michaelrsweet for his work on `CUPS`, `PAPPL` and [`hp-printer-app`](https://github.com/michaelrsweet/hp-printer-app)*
 

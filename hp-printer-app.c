@@ -289,14 +289,14 @@ pcl_callback(
     papplCopyString(driver_data->make_and_model, "HP DeskJet series", sizeof(driver_data->make_and_model));
 
     /* Icons */
-    driver_data->icons[0].data    = hp_deskjet_sm_png;
-    driver_data->icons[0].datalen = sizeof(hp_deskjet_sm_png);
+    driver_data->icons[0].data    = hp_laserjet_p2055d_sm_png;
+    driver_data->icons[0].datalen = sizeof(hp_laserjet_p2055d_sm_png);
 
-    driver_data->icons[1].data    = hp_deskjet_md_png;
-    driver_data->icons[1].datalen = sizeof(hp_deskjet_md_png);
+    driver_data->icons[1].data    = hp_laserjet_p2055d_md_png;
+    driver_data->icons[1].datalen = sizeof(hp_laserjet_p2055d_md_png);
 
-    driver_data->icons[2].data    = hp_deskjet_lg_png;
-    driver_data->icons[2].datalen = sizeof(hp_deskjet_lg_png);
+    driver_data->icons[2].data    = hp_laserjet_p2055d_lg_png;
+    driver_data->icons[2].datalen = sizeof(hp_laserjet_p2055d_lg_png);
 
     /* Pages-per-minute for monochrome and color */
     driver_data->ppm       = 8;
@@ -353,14 +353,14 @@ pcl_callback(
     papplCopyString(driver_data->make_and_model, "Generic PCL 5", sizeof(driver_data->make_and_model));
 
     /* Icons */
-    driver_data->icons[0].data    = hp_generic_sm_png;
-    driver_data->icons[0].datalen = sizeof(hp_generic_sm_png);
+    driver_data->icons[0].data    = hp_laserjet_p2055d_sm_png;
+    driver_data->icons[0].datalen = sizeof(hp_laserjet_p2055d_sm_png);
 
-    driver_data->icons[1].data    = hp_generic_md_png;
-    driver_data->icons[1].datalen = sizeof(hp_generic_md_png);
+    driver_data->icons[1].data    = hp_laserjet_p2055d_md_png;
+    driver_data->icons[1].datalen = sizeof(hp_laserjet_p2055d_md_png);
 
-    driver_data->icons[2].data    = hp_generic_lg_png;
-    driver_data->icons[2].datalen = sizeof(hp_generic_lg_png);
+    driver_data->icons[2].data    = hp_laserjet_p2055d_lg_png;
+    driver_data->icons[2].datalen = sizeof(hp_laserjet_p2055d_lg_png);
 
     /* Pages-per-minute for monochrome and color */
     driver_data->ppm = 10;
@@ -419,14 +419,14 @@ pcl_callback(
     papplCopyString(driver_data->make_and_model, "HP LaserJet series", sizeof(driver_data->make_and_model));
 
     /* Icons */
-    driver_data->icons[0].data    = hp_laserjet_sm_png;
-    driver_data->icons[0].datalen = sizeof(hp_laserjet_sm_png);
+    driver_data->icons[0].data    = hp_laserjet_p2055d_sm_png;
+    driver_data->icons[0].datalen = sizeof(hp_laserjet_p2055d_sm_png);
 
-    driver_data->icons[1].data    = hp_laserjet_md_png;
-    driver_data->icons[1].datalen = sizeof(hp_laserjet_md_png);
+    driver_data->icons[1].data    = hp_laserjet_p2055d_md_png;
+    driver_data->icons[1].datalen = sizeof(hp_laserjet_p2055d_md_png);
 
-    driver_data->icons[2].data    = hp_laserjet_lg_png;
-    driver_data->icons[2].datalen = sizeof(hp_laserjet_lg_png);
+    driver_data->icons[2].data    = hp_laserjet_p2055d_lg_png;
+    driver_data->icons[2].datalen = sizeof(hp_laserjet_p2055d_lg_png);
 
     /* Pages-per-minute for monochrome and color */
     driver_data->ppm = 10;
