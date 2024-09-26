@@ -132,7 +132,6 @@ static const char * const pcl_hp_laserjet_media[] =
 // Local functions...
 //
 
-static const char *pcl_autoadd(const char *device_info, const char *device_uri, const char *device_id, void *data);
 static bool	pcl_callback(pappl_system_t *system, const char *driver_name, const char *device_uri, const char *device_id, pappl_pr_driver_data_t *driver_data, ipp_t **driver_attrs, void *data);
 static void	pcl_compress_data(pcl_t *pcl, pappl_device_t *device, unsigned y, const unsigned char *line, unsigned length, unsigned plane);
 static bool	pcl_print(pappl_job_t *job, pappl_pr_options_t *options, pappl_device_t *device);
@@ -157,58 +156,11 @@ main(int  argc,				// I - Number of command-line arguments
                         VERSION,
                         "Copyright &copy; 2020-2024 by Michael R Sweet. Provided under the terms of the <a href=\"https://www.apache.org/licenses/LICENSE-2.0\">Apache License 2.0</a>.",
                         (int)(sizeof(pcl_drivers) / sizeof(pcl_drivers[0])),
-                        pcl_drivers, pcl_autoadd, pcl_callback,
+                        pcl_drivers, /*autoadd_cb*/NULL, pcl_callback,
                         /*subcmd_name*/NULL, /*subcmd_cb*/NULL,
                         /*system_cb*/NULL,
                         /*usage_cb*/NULL,
                         /*data*/NULL));
-}
-
-
-//
-// 'pcl_autoadd()' - Auto-add PCL printers.
-//
-
-static const char *			// O - Driver name or `NULL` for none
-pcl_autoadd(const char *device_info,	// I - Device name
-            const char *device_uri,	// I - Device URI
-            const char *device_id,	// I - IEEE-1284 device ID
-            void       *data)		// I - Callback data (not used)
-{
-  const char	*ret = NULL;		// Return value
-  int		num_did;		// Number of device ID key/value pairs
-  cups_option_t	*did;			// Device ID key/value pairs
-  const char	*cmd,			// Command set value
-		*pcl;			// PCL command set pointer
-
-
-  // Parse the IEEE-1284 device ID to see if this is a printer we support...
-  num_did = papplDeviceParseID(device_id, &did);
-
-  // Look at the COMMAND SET (CMD) key for the list of printer languages,,,
-  if ((cmd = cupsGetOption("COMMAND SET", num_did, did)) == NULL)
-    cmd = cupsGetOption("CMD", num_did, did);
-
-  if (cmd && (pcl = strstr(cmd, "PCL")) != NULL && (pcl[3] == ',' || !pcl[3]))
-  {
-    // Printer supports HP PCL, now look at the MODEL (MDL) string to see if
-    // it is one of the HP models or a generic PCL printer...
-    const char *mdl;			// Model name string
-
-    if ((mdl = cupsGetOption("MODEL", num_did, did)) == NULL)
-      mdl = cupsGetOption("MDL", num_did, did);
-
-    if (mdl && (strstr(mdl, "DeskJet") || strstr(mdl, "Photosmart")))
-      ret = "hp_deskjet";		// HP DeskJet/Photosmart printer
-    else if (mdl && strstr(mdl, "LaserJet"))
-      ret = "hp_laserjet";		// HP LaserJet printer
-    else
-      ret = "hp_generic";		// Some other PCL laser printer
-  }
-
-  cupsFreeOptions(num_did, did);
-
-  return (ret);
 }
 
 
